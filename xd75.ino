@@ -173,9 +173,9 @@ void setup() {
         delay(100);
     }
 
-#ifdef XD75_V1
+#if defined(XD75_V1)
     hardware.keycapsLedsWrite(true);
-#elseif XD75_V2
+#elif defined(XD75_V2)
     hardware.keycapsLedsWrite(false);
 #endif
 }
