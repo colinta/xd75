@@ -68,7 +68,7 @@
 KEYS(mainKeys) = LAYOUT_my(
     KC_ESC , KC_GRV , TH_1   , TH_2   , TH_3   , TH_4   , TH_5   , KC_DEL , TH_6   , TH_7   , TH_8   , TH_9   , TH_0   , KC_MINS, KC_EQL ,
              KC_TAB , KC_Q   , KC_W   , KC_F   , KC_P   , KC_G   , KC_BSPC, KC_J   , KC_L   , KC_U   , KC_Y   , KC_SCLN, TH_LBRC, TH_RBRC,
-             ST_SFT , KC_A   , KC_R   , KC_S   , WTF_T  , KC_D   , KC_ENT , KC_H   , KC_N   , KC_E   , KC_I   , KC_O   , TH_QUOT, KC_BSLS,
+             ST_SFT , KC_A   , KC_R   , KC_S   , KC_T   , KC_D   , KC_ENT , KC_H   , KC_N   , KC_E   , KC_I   , KC_O   , TH_QUOT, KC_BSLS,
              ST_CTL , KC_Z   , KC_X   , KC_C   , KC_V   , KC_B   ,  META  , KC_K   , KC_M   , KC_COMM, TH_DOT , KC_SLSH, KC_UP  , ST_CAG ,
              TH_PLAY,         ST_ALT     ,      ST_GUI           ,          KC_SPC          , TH_PGUP, TH_PGDN, KC_LEFT, KC_DOWN, KC_RGHT
 );
@@ -84,7 +84,7 @@ KEYS(fnKeys) = LAYOUT_my(
 KEYS(gameKeys) = LAYOUT_my(
     KC_ESC , KC_GRV , TH_1   , TH_2   , TH_3   , TH_4   , TH_5   , KC_DEL , TH_6   , TH_7   , TH_8   , TH_9   , TH_0   , KC_MINS, KC_EQL ,
              KC_TAB , KC_Q   , KC_W   , KC_E   , KC_F   , KC_G   , KC_BSPC, KC_Y   , KC_L   , KC_I   , KC_O   , KC_P   , KC_LBRC, KC_RBRC,
-             KC_LSFT, KC_A   , KC_S   , KC_D   ,WTF_SPC , KC_T   , KC_ENT , KC_H   , KC_J   , KC_K   , KC_K   , KC_U   , KC_SCLN, KC_BSLS,
+             KC_LSFT, KC_A   , KC_S   , KC_D   , KC_SPC , KC_T   , KC_ENT , KC_H   , KC_J   , KC_K   , KC_K   , KC_U   , KC_SCLN, KC_BSLS,
              KC_LCTL, KC_Z   , KC_X   , KC_C   , KC_V   , KC_B   ,  META  , KC_N   , KC_M   , KC_COMM, TH_DOT , KC_SLSH, KC_UP  , ST_CAG ,
              TH_PLAY,         KC_LALT    ,      KC_LGUI          ,          KC_R            , TH_PGUP, TH_PGDN, KC_LEFT, KC_DOWN, KC_RGHT
 );
