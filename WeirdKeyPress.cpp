@@ -1,22 +1,46 @@
-#include "ThrottledKeyPress.h"
+#include "WeirdKeyPress.h"
+#include <Mechy/Sticky.h>
 
 
-ThrottledKeyPress::ThrottledKeyPress() {
-    prev_key = 0;
-    prev_time = millis();
-    delay = 100;
+WeirdKeyPress::WeirdKeyPress() {
+    ignoreNextGui = false;
+    listenNextGui = false;
 }
 
-uint8_t ThrottledKeyPress::defaultName() {
-    return FN_THROTTLED;
+uint8_t WeirdKeyPress::defaultName() {
+    return FN_WEIRD;
 }
 
-bool ThrottledKeyPress::is(uint8_t event_type, Event* event) {
+bool WeirdKeyPress::override(uint8_t name, Event* event, Plugin* plugin) {
+    Plugin *sticky = mechy->pluginFor(FN_STICKY);
+    if (!sticky) { return KBD_CONTINUE; }
+
+    if (name == FN_WEIRD && event->isPressed() && (mechy->currentModifiers() & MOD_GUI)) {
+        // do not turn off gui
+        ignoreNextGui = true;
+    }
+    else if (name == FN_WEIRD && event->isReleased() && (mechy->currentModifiers() & MOD_GUI)) {
+        mechy->releaseKey(KEY_LEFT_GUI);
+        listenNextGui = true;
+    }
+    else if (listenNextGui && name == FN_STICKY && event->isPressed() && event->key() == STK_GUI) {
+        mechy->pressKey(KEY_LEFT_GUI);
+        listenNextGui = false;
+        return KBD_HALT;
+    }
+    else if (ignoreNextGui && name == FN_STICKY && event->isReleased() && event->key() == STK_GUI) {
+        ignoreNextGui = false;
+        return KBD_HALT;
+    }
+    return KBD_CONTINUE;
+}
+
+bool WeirdKeyPress::is(uint8_t event_type, Event* event) {
     // does this key have modifiers in the data channel?  if so, match EVENT_MODIFIER
     if (event->data() & DATA_MOD_ANY && event_type == EVENT_MODIFIER)  return true;
 
     // is this a single modifier key?  only match EVENT_MODIFIER
-    else if (
+    if (
         event->key() == KEY_LEFT_SHIFT ||
         event->key() == KEY_LEFT_CTRL ||
         event->key() == KEY_LEFT_ALT ||
@@ -33,22 +57,14 @@ bool ThrottledKeyPress::is(uint8_t event_type, Event* event) {
     return event->key() && event_type == EVENT_KEYPRESS;
 }
 
-void ThrottledKeyPress::run(Event* event) {
+void WeirdKeyPress::run(Event* event) {
     if (event->isPressed()) {
-        unsigned long now = millis();
-        if (event->key() == prev_key && now - prev_time < delay) {
-            return;
-        }
-
         if (event->data() & DATA_MOD_LSFT) { mechy->pressKey(KEY_LEFT_SHIFT); }
         if (event->data() & DATA_MOD_LGUI) { mechy->pressKey(KEY_LEFT_GUI); }
         if (event->data() & DATA_MOD_LCTL) { mechy->pressKey(KEY_LEFT_CTRL); }
         if (event->data() & DATA_MOD_LALT) { mechy->pressKey(KEY_LEFT_ALT); }
 
         mechy->pressKey(event->key());
-
-        prev_key = event->key();
-        prev_time = millis();
     }
     else if (event->isReleased()) {
         mechy->releaseKey(event->key());
