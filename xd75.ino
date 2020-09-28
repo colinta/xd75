@@ -15,7 +15,7 @@
 #include <Mechy/GotoLayer.h>
 #include <Mechy/TapHold.h>
 #include <Mechy/Lock.h>
-#include "WeirdKeyPress.h"
+#include "SerialRead.h"
 
 #ifdef DEBUG_ON
 #include <Mechy/DebugKey.h>
@@ -74,7 +74,7 @@ KEYS(mainKeys) = LAYOUT_my(
 );
 
 KEYS(fnKeys) = LAYOUT_my(
-    SLEEP  ,  ____  , KC_F1  , KC_F2  , KC_F3  , KC_F4  , KC_F5  ,  GAME  ,  KC_F6 , KC_F7  , KC_F8  , KC_F9  , KC_F10 , KC_F11 , KC_F12 ,
+    SLEEP  ,SR_PASTE, KC_F1  , KC_F2  , KC_F3  , KC_F4  , KC_F5  ,  GAME  ,  KC_F6 , KC_F7  , KC_F8  , KC_F9  , KC_F10 , KC_F11 , KC_F12 ,
              PW_TAB ,  ____  ,  PW_W  ,  ____  ,  ____  ,  ____  , COLEMAK,  PW_J  ,  PW_L  ,  ____  ,  ____  ,  ____  , KC_LBRC, KC_RBRC,
               ____  ,  ____  ,  ____  ,  PW_S  ,  PW_T  ,  PW_D  ,  ADA   ,  ____  ,  PW_N  ,  PW_E  ,  ____  ,  ____  , KC_QUOT,  ____  ,
               ____  ,  ____  ,  ____  ,  ____  ,  ____  , MD_VOLD,  BACK  , MD_VOLU,  ____  ,  ____  , KC_DOT , KC_INS , KC_PGUP, KC_CAPS,
@@ -83,9 +83,9 @@ KEYS(fnKeys) = LAYOUT_my(
 
 KEYS(gameKeys) = LAYOUT_my(
     KC_ESC , KC_GRV , TH_1   , TH_2   , TH_3   , TH_4   , TH_5   , KC_DEL , TH_6   , TH_7   , TH_8   , TH_9   , TH_0   , KC_MINS, KC_EQL ,
-             KC_TAB , KC_Q   , KC_W   , KC_E   , KC_F   , KC_G   , KC_BSPC, KC_Y   , KC_L   , KC_I   , KC_O   , KC_P   , KC_LBRC, KC_RBRC,
-             KC_LSFT, KC_A   , KC_S   , KC_D   , KC_SPC , KC_T   , KC_ENT , KC_H   , KC_J   , KC_K   , KC_K   , KC_U   , KC_SCLN, KC_BSLS,
-             KC_LCTL, KC_Z   , KC_X   , KC_C   , KC_V   , KC_B   ,  META  , KC_N   , KC_M   , KC_COMM, TH_DOT , KC_SLSH, KC_UP  , ST_CAG ,
+             KC_TAB , KC_Q   , KC_W   , KC_E   , KC_F   , KC_G   , KC_BSPC, KC_J   , KC_L   , KC_U   , KC_Y   , KC_SCLN, KC_LBRC, KC_RBRC,
+             KC_LSFT, KC_A   , KC_S   , KC_D   , KC_SPC , KC_T   , KC_ENT , KC_H   , KC_N   , KC_E   , KC_I   , KC_O   , KC_SCLN, KC_BSLS,
+             KC_LCTL, KC_Z   , KC_X   , KC_C   , KC_V   , KC_B   ,  META  , KC_K   , KC_M   , KC_COMM, TH_DOT , KC_SLSH, KC_UP  , ST_CAG ,
              TH_PLAY,         KC_LALT    ,      KC_LGUI          ,          KC_R            , TH_PGUP, TH_PGDN, KC_LEFT, KC_DOWN, KC_RGHT
 );
 
@@ -161,7 +161,7 @@ void setup() {
     mechy.add(new Sticky());
     mechy.add(new GotoLayer());
     mechy.add(new Lock(3));
-    mechy.add(new WeirdKeyPress());
+    mechy.add(new SerialRead());
     mechy.add(tapHold);
     mechy.add(&password);
     mechy.add(&sendString);
