@@ -15,25 +15,13 @@
 #include <Mechy/GotoLayer.h>
 #include <Mechy/TapHold.h>
 #include <Mechy/Lock.h>
+#include <Mechy/MouseKey.h>
 #include "SerialRead.h"
+#include "MyLayout.h"
 
 #ifdef DEBUG_ON
 #include <Mechy/DebugKey.h>
 #endif
-
-#define LAYOUT_my( \
-    k00 , k01 , k02 , k03 , k04 , k05 , k06 , k07 , k08 , k09 , k0a , k0b , k0c , k0d , k0e , \
-          k11 , k12 , k13 , k14 , k15 , k16 , k17 , k18 , k19 , k1a , k1b , k1c , k1d , k1e , \
-          k21 , k22 , k23 , k24 , k25 , k26 , k27 , k28 , k29 , k2a , k2b , k2c , k2d , k2e , \
-          k31 , k32 , k33 , k34 , k35 , k36 , k37 , k38 , k39 , k3a , k3b , k3c , k3d , k3e , \
-          k41    ,    k43    ,    k45    ,          k48       , k4a , k4b , k4c , k4d , k4e   \
-) { \
-    k00,  k01 , k02 , k03 , k04 , k05 , k06 , k07 , k08 , k09 , k0a , k0b , k0c , k0d , k0e , \
-    ____, k11 , k12 , k13 , k14 , k15 , k16 , k17 , k18 , k19 , k1a , k1b , k1c , k1d , k1e , \
-    ____, k21 , k22 , k23 , k24 , k25 , k26 , k27 , k28 , k29 , k2a , k2b , k2c , k2d , k2e , \
-    ____, k31 , k32 , k33 , k34 , k35 , k36 , k37 , k38 , k39 , k3a , k3b , k3c , k3d , k3e , \
-    ____, k41 , ____, k43 , ____, k45 , ____, ____, k48 , ____, k4a , k4b , k4c , k4d , k4e   \
-}
 
 #define SLEEP KC(LGUI(LCTL('q')))
 #define TH_PGUP TH(10)
@@ -55,6 +43,7 @@
 #define PW_PGUP PW(9)
 #define PW_PGDN PW(10)
 #define PW_TAB  PW(11)
+#define PW_SFT  PW(12)
 
 #define COLE_LAYER 0
 #define META_LAYER 1
@@ -76,7 +65,7 @@ KEYS(mainKeys) = LAYOUT_my(
 KEYS(fnKeys) = LAYOUT_my(
     SLEEP  ,SR_PASTE, KC_F1  , KC_F2  , KC_F3  , KC_F4  , KC_F5  ,  GAME  ,  KC_F6 , KC_F7  , KC_F8  , KC_F9  , KC_F10 , KC_F11 , KC_F12 ,
              PW_TAB ,  ____  ,  PW_W  ,  ____  ,  ____  ,  ____  , COLEMAK,  PW_J  ,  PW_L  ,  ____  ,  ____  ,  ____  , KC_LBRC, KC_RBRC,
-              ____  ,  ____  ,  ____  ,  PW_S  ,  PW_T  ,  PW_D  ,  ADA   ,  ____  ,  PW_N  ,  PW_E  ,  ____  ,  ____  , KC_QUOT,  ____  ,
+             PW_SFT ,  ____  ,  ____  ,  PW_S  ,  PW_T  ,  PW_D  ,   ADA  ,  ____  ,  PW_N  ,  PW_E  ,  ____  ,  ____  , KC_QUOT,  ____  ,
               ____  ,  ____  ,  ____  ,  ____  ,  ____  , MD_VOLD,  BACK  , MD_VOLU,  ____  ,  ____  , KC_DOT , KC_INS , KC_PGUP, KC_CAPS,
                LK   ,            LK      ,         LK            ,          PW_SPC          , PW_PGUP, PW_PGDN, KC_HOME, KC_PGDN, KC_END
 );
@@ -112,8 +101,8 @@ Layout layout = Layout(ROWS, COLS, mainKeys, fnKeys, gameKeys, adaKeys);
 
 #if (__has_include("secrets.h"))
 #include "secrets.h"
-#define PASSWORDS 12
-const char* passwords[PASSWORDS] = {PASS_N, PASS_S, PASS_E, PASS_T, PASS_J, PASS_W, PASS_L, PASS_D, PASS_SPC, PASS_PGUP, PASS_PGDN, PASS_TAB};
+#define PASSWORDS 13
+const char* passwords[PASSWORDS] = {PASS_N, PASS_S, PASS_E, PASS_T, PASS_J, PASS_W, PASS_L, PASS_D, PASS_SPC, PASS_PGUP, PASS_PGDN, PASS_TAB, PASS_SFT};
 #else
 #define PASSWORDS 0
 const char* passwords[] = {};
