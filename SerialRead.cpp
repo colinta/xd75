@@ -24,6 +24,7 @@ void SerialRead::run(Event* event) {
     uint16_t mods = mechy->currentModifiers();
     mechy->clearModifiers();
     Keyboard.print(current);
+    Keyboard.print("\n");
     mechy->updateModifiers(mods);
 }
 
@@ -44,9 +45,7 @@ void SerialRead::tick() {
     char incomingByte;
     while (Serial.available()) {
         incomingByte = Serial.read() & 0b11111111;
-        if (current) {
-            current[actualLength] = incomingByte;
-        }
+        current[actualLength] = incomingByte;
         actualLength += 1;
         if (actualLength == allocLength) {
             char *prev = current;
@@ -59,6 +58,11 @@ void SerialRead::tick() {
 
             if (prev) {
                 free(prev);
+            }
+
+            if (!current) {
+                EEPROM.write(0, 0);
+                return;
             }
         }
     }
