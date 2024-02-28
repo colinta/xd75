@@ -1,3 +1,5 @@
+#include <Adafruit_NeoPixel.h>
+
 #undef DEBUG_ON
 
 // xd75 v1 - Stained Ash
@@ -15,7 +17,10 @@
 #include <Mechy/GotoLayer.h>
 #include <Mechy/TapHold.h>
 #include <Mechy/Lock.h>
+#include <Mechy/MouseKey.h>
 #include "SerialRead.h"
+
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(10, RGB_PIN, NEO_GRB + NEO_KHZ800);
 
 #ifdef DEBUG_ON
 #include <Mechy/DebugKey.h>
@@ -76,7 +81,7 @@ KEYS(mainKeys) = LAYOUT_my(
 KEYS(fnKeys) = LAYOUT_my(
     SLEEP  ,SR_PASTE, KC_F1  , KC_F2  , KC_F3  , KC_F4  , KC_F5  ,  GAME  ,  KC_F6 , KC_F7  , KC_F8  , KC_F9  , KC_F10 , KC_F11 , KC_F12 ,
              PW_TAB ,  ____  ,  PW_W  ,  ____  ,  ____  ,  ____  , COLEMAK,  PW_J  ,  PW_L  ,  ____  ,  ____  ,  ____  , KC_LBRC, KC_RBRC,
-              ____  ,  ____  ,  ____  ,  PW_S  ,  PW_T  ,  PW_D  ,  ADA   ,  ____  ,  PW_N  ,  PW_E  ,  ____  ,  ____  , KC_QUOT,  ____  ,
+              ____  ,  ____  ,  ____  ,  PW_S  ,  PW_T  ,  PW_D  ,   ADA  ,  ____  ,  PW_N  ,  PW_E  ,  ____  ,  ____  , KC_QUOT,  ____  ,
               ____  ,  ____  ,  ____  ,  ____  ,  ____  , MD_VOLD,  BACK  , MD_VOLU,  ____  ,  ____  , KC_DOT , KC_INS , KC_PGUP, KC_CAPS,
                LK   ,            LK      ,         LK            ,          PW_SPC          , PW_PGUP, PW_PGDN, KC_HOME, KC_PGDN, KC_END
 );
@@ -132,8 +137,12 @@ uint16_t* macros[] = {
 };
 SendString sendString = SendString(4, macros);
 
+uint8_t* targetRGB = NULL;
+uint8_t* currentRGB = NULL;
 
 void setup() {
+    randomSeed(analogRead(A4));
+
 #ifdef DEBUG_ON
     mechy.add(new DebugKey());
 #endif
@@ -173,16 +182,39 @@ void setup() {
     mechy.begin();
     hardware.begin();
 
-    hardware.capsLockLedWrite(false);
-    hardware.gp100Write(false);
-    hardware.gp103Write(false);
+    strip.begin();
+    strip.show(); // Initialize all pixels to 'off'
+
+    uint8_t total = 0;
+    for (uint8_t i=0; i < strip.numPixels(); i++) {
+      strip.setPixelColor(i, 0, 0, 0);
+      total += 3;
+    }
+    targetRGB = (uint8_t*)malloc(sizeof(uint8_t) * total);
+    currentRGB = (uint8_t*)malloc(sizeof(uint8_t) * total);
 
     for (uint8_t i = 0; i < 3 ; ++i) {
         hardware.keycapsLedsWrite(true);
+        hardware.capsLockLedWrite(true);
+        hardware.gp100Write(true);
+        hardware.gp103Write(true);
         delay(100);
+
         hardware.keycapsLedsWrite(false);
+        hardware.capsLockLedWrite(false);
+        hardware.gp100Write(false);
+        hardware.gp103Write(false);
         delay(100);
     }
+
+    for (uint8_t i=0; i < strip.numPixels(); i++) {
+        currentRGB[i * 3]     = targetRGB[i * 3]     = random(128);
+        currentRGB[i * 3 + 1] = targetRGB[i * 3 + 1] = random(128);
+        currentRGB[i * 3 + 2] = targetRGB[i * 3 + 2] = random(128);
+
+        strip.setPixelColor(i, currentRGB[i * 3], currentRGB[i * 3 + 1], currentRGB[i * 3 + 2]);
+    }
+    strip.show();
 
 #if defined(XD75_V1)
     hardware.keycapsLedsWrite(true);
@@ -196,6 +228,28 @@ void loop() {
     hardware.tick();
 
     bool isMetaLayer = mechy.currentLayer() == META_LAYER;
+    if (isMetaLayer) {
+        for (uint8_t i=0; i < strip.numPixels(); i++) {
+            for (uint8_t rgb=0; rgb < 3; rgb++) {
+                if (currentRGB[i*3 + rgb] > targetRGB[i*3 + rgb]) {
+                    currentRGB[i*3 + rgb] -= 1;
+                    if (currentRGB[i*3 + rgb] == 0) {
+                        currentRGB[i*3 + rgb] = targetRGB[i*3 + rgb] = random(128);
+                    }
+                } else if (currentRGB[i*3 + rgb] < targetRGB[i*3 + rgb]) {
+                    currentRGB[i*3 + rgb] += 1;
+                    if (currentRGB[i*3 + rgb] == 128) {
+                        currentRGB[i*3 + rgb] = targetRGB[i*3 + rgb] = random(128);
+                    }
+                } else {
+                    targetRGB[i*3 + rgb] = random(128);
+                }
+            }
+
+            strip.setPixelColor(i, currentRGB[i*3], currentRGB[i*3 + 1], currentRGB[i*3 + 2]);
+        }
+        strip.show();
+    }
 #if defined(XD75_V1)
     hardware.gp103Write(isMetaLayer);
     hardware.gp100Write(isMetaLayer);
