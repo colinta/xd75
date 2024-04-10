@@ -49,17 +49,16 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(10, RGB_PIN, NEO_GRB + NEO_KHZ800);
 #define TH_LBRC TH(15)
 #define TH_RBRC TH(16)
 #define PW_N    PW(0)
-#define PW_S    PW(1)
-#define PW_E    PW(2)
-#define PW_T    PW(3)
-#define PW_J    PW(4)
-#define PW_W    PW(5)
-#define PW_L    PW(6)
-#define PW_D    PW(7)
-#define PW_SPC  PW(8)
-#define PW_PGUP PW(9)
-#define PW_PGDN PW(10)
-#define PW_TAB  PW(11)
+#define PW_E    PW(1)
+#define PW_T    PW(2)
+#define PW_J    PW(3)
+#define PW_W    PW(4)
+#define PW_L    PW(5)
+#define PW_D    PW(6)
+#define PW_SPC  PW(7)
+#define PW_PGUP PW(8)
+#define PW_PGDN PW(9)
+#define PW_TAB  PW(10)
 
 #define COLE_LAYER 0
 #define META_LAYER 1
@@ -81,8 +80,8 @@ KEYS(mainKeys) = LAYOUT_my(
 KEYS(fnKeys) = LAYOUT_my(
     SLEEP  ,SR_PASTE, KC_F1  , KC_F2  , KC_F3  , KC_F4  , KC_F5  ,  GAME  ,  KC_F6 , KC_F7  , KC_F8  , KC_F9  , KC_F10 , KC_F11 , KC_F12 ,
              PW_TAB ,  ____  ,  PW_W  ,  ____  ,  ____  ,  ____  , COLEMAK,  PW_J  ,  PW_L  ,  ____  ,  ____  ,  ____  , KC_LBRC, KC_RBRC,
-              ____  ,  ____  ,  ____  ,  PW_S  ,  PW_T  ,  PW_D  ,   ADA  ,  ____  ,  PW_N  ,  PW_E  ,  ____  ,  ____  , KC_QUOT,  ____  ,
-              ____  ,  ____  ,  ____  ,  ____  ,  ____  , MD_VOLD,  BACK  , MD_VOLU,  ____  ,  ____  , KC_DOT , KC_INS , KC_PGUP, KC_CAPS,
+             KC_LSFT, MK_LCLK,  MK_UP , MK_RCLK,  PW_T  ,  PW_D  ,   ADA  ,  ____  ,  PW_N  ,  PW_E  ,  ____  ,  ____  , KC_QUOT,  ____  ,
+             KC_LCTL, MK_LEFT, MK_DOWN, MK_RGHT,  ____  , MD_VOLD,  BACK  , MD_VOLU,  ____  ,  ____  , KC_DOT , KC_INS , KC_PGUP, KC_CAPS,
                LK   ,            LK      ,         LK            ,          PW_SPC          , PW_PGUP, PW_PGDN, KC_HOME, KC_PGDN, KC_END
 );
 
@@ -118,7 +117,7 @@ Layout layout = Layout(ROWS, COLS, mainKeys, fnKeys, gameKeys, adaKeys);
 #if (__has_include("secrets.h"))
 #include "secrets.h"
 #define PASSWORDS 12
-const char* passwords[PASSWORDS] = {PASS_N, PASS_S, PASS_E, PASS_T, PASS_J, PASS_W, PASS_L, PASS_D, PASS_SPC, PASS_PGUP, PASS_PGDN, PASS_TAB};
+const char* passwords[PASSWORDS] = {PASS_N, PASS_E, PASS_T, PASS_J, PASS_W, PASS_L, PASS_D, PASS_SPC, PASS_PGUP, PASS_PGDN, PASS_TAB};
 #else
 #define PASSWORDS 0
 const char* passwords[] = {};
@@ -170,6 +169,7 @@ void setup() {
     mechy.add(new Sticky());
     mechy.add(new GotoLayer());
     mechy.add(new Lock(3));
+    mechy.add(new MouseKey());
     mechy.add(new SerialRead());
     mechy.add(tapHold);
     mechy.add(&password);
