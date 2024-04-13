@@ -80,9 +80,9 @@ KEYS(mainKeys) = LAYOUT_my(
 KEYS(fnKeys) = LAYOUT_my(
     SLEEP  ,SR_PASTE, KC_F1  , KC_F2  , KC_F3  , KC_F4  , KC_F5  ,  GAME  ,  KC_F6 , KC_F7  , KC_F8  , KC_F9  , KC_F10 , KC_F11 , KC_F12 ,
              PW_TAB ,  ____  ,  PW_W  ,  ____  ,  ____  ,  ____  , COLEMAK,  PW_J  ,  PW_L  ,  ____  ,  ____  ,  ____  , KC_LBRC, KC_RBRC,
-             KC_LSFT, MK_LCLK,  MK_UP , MK_RCLK,  PW_T  ,  PW_D  ,   ADA  ,  ____  ,  PW_N  ,  PW_E  ,  ____  ,  ____  , KC_QUOT,  ____  ,
-             KC_LCTL, MK_LEFT, MK_DOWN, MK_RGHT,  ____  , MD_VOLD,  BACK  , MD_VOLU,  ____  ,  ____  , KC_DOT , KC_INS , KC_PGUP, KC_CAPS,
-               LK   ,            LK      ,         LK            ,          PW_SPC          , PW_PGUP, PW_PGDN, KC_HOME, KC_PGDN, KC_END
+             ST_SFT , MK_LCLK,  MK_UP , MK_RCLK,  PW_T  ,  PW_D  ,   ADA  ,  ____  ,  PW_N  ,  PW_E  ,  ____  ,  ____  , KC_QUOT,  ____  ,
+             ST_CTL , MK_LEFT, MK_DOWN, MK_RGHT,  ____  , MD_VOLD,  BACK  , MD_VOLU,  ____  ,  ____  , KC_DOT , KC_INS , KC_PGUP, KC_CAPS,
+               LK   ,          ST_ALT    ,       ST_GUI          ,          PW_SPC          , PW_PGUP, PW_PGDN, KC_HOME, KC_PGDN, KC_END
 );
 
 KEYS(gameKeys) = LAYOUT_my(
@@ -135,14 +135,12 @@ Scanner scanner = Scanner(&layout, pinRows, pinCols, ROWS, COLS);
 Mechy mechy = Mechy();
 Hardware hardware = Hardware(&mechy);
 
-Password password = Password(PASSWORDS, passwords);
 uint16_t* macros[] = {
-    send3(ignoreModifiers(downUp('\\')), ignoreModifiers(downUp(LCTL('v'))), downUp('\'')),
-    send2(ignoreModifiers(downUp('\\')), downUp('.')),
-    send3(ignoreModifiers(downUp('\\')), ignoreModifiers(downUp(LCTL('v'))), downUp('[')),
-    send2(ignoreModifiers(downUp('\\')), downUp(']')),
+    sendKeys(ignoreModifiers(downUp('\\')), ignoreModifiers(downUp(LCTL('v'))), downUp('\'')),
+    sendKeys(ignoreModifiers(downUp('\\')), downUp('.')),
+    sendKeys(ignoreModifiers(downUp('\\')), ignoreModifiers(downUp(LCTL('v'))), downUp('[')),
+    sendKeys(ignoreModifiers(downUp('\\')), downUp(']')),
 };
-SendString sendString = SendString(4, macros);
 
 uint8_t* targetRGB = NULL;
 uint8_t* currentRGB = NULL;
@@ -180,9 +178,9 @@ void setup() {
     mechy.add(new MouseKey());
     mechy.add(new SerialRead());
     mechy.add(tapHold);
-    mechy.add(&password);
-    mechy.add(&sendString);
-
+    mechy.add(new Password(PASSWORDS, passwords));
+    mechy.add(new SendString(4, macros));
+  
     mechy.attach(&scanner);
 
     mechy.setListenFunc(&update);
